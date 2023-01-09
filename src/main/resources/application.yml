@@ -30,7 +30,9 @@ spring:
       ddl-auto: update
     show-sql: true
     defer-datasource-initialization: true
-
+  data:
+    rest:
+      use-hal-as-default-json-media-type: true
 #  cloud:
 #    loadbalancer:
 #      ribbon:

@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 @Data
 @Builder
-@Entity
+@Entity(name = "tb_atividadeprincipal")
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)

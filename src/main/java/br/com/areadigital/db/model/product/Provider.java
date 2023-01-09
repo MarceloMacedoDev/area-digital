@@ -1,7 +1,9 @@
-package br.com.areadigital.db.model.company;
+package br.com.areadigital.db.model.product;
 
 import br.com.areadigital.db.converter.DateConverter;
 import br.com.areadigital.db.model.IBaseEntity;
+import br.com.areadigital.db.model.company.AtividadePrincipal;
+import br.com.areadigital.db.model.company.AtividadesSecundaria;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,15 +14,17 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
-@Entity(name = "tb_company")
+@Entity(name = "tb_provider")
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Company implements Serializable , IBaseEntity<Long> {
+public class Provider implements Serializable , IBaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -30,13 +34,16 @@ public class Company implements Serializable , IBaseEntity<Long> {
     @Convert(converter = DateConverter.class)
     private String abertura;
 
-    @JsonProperty(value = "tb_company_atividade_principal")
+    @JsonProperty(value = "tb_provider_atividade_principal")
     @OneToMany(mappedBy = "company")
     private List<AtividadePrincipal> atividadePrincipal  ;
 
-    @JsonProperty(value = "tb_company_atividades_secundarias")
+    @JsonProperty(value = "tb_pbr.com.areadigital.webrovider_atividades_secundarias")
     @OneToMany(mappedBy = "company")
     private List<AtividadesSecundaria> atividadesSecundaria ;
+
+    @ManyToMany(mappedBy = "providers")
+    private List<Product> products = new ArrayList<>();
 
     private String bairro;
     @JsonProperty(value = "capital_social")
