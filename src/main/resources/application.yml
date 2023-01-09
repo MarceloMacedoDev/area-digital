@@ -1,0 +1,169 @@
+server:
+  port: 8090
+
+#Database
+# database configs
+
+spring:
+  application:
+    name: @project.name@
+  datasource:
+#    url: jdbc:postgresql://localhost:5432/ualphb
+#    username: ualphb
+#    password: password
+#    driver-class-name: org.postgresql.Driver
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    defer-datasource-initialization: true
+
+#  cloud:
+#    loadbalancer:
+#      ribbon:
+#        enable: false
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+
+
+#security
+jwt:
+  secret: ${JWT_SECRET:70ca8a65-2922-42fe-a2a5-b37c2b2338c2
+  duration: ${JWT_DURATION:86400}
+security:
+  oauth2:
+    password: 5c537882-de82-4782-a90e-e8c41aec795e
+    client:
+      client-id: ${CLIENT-ID:20ef40d1-32d5-4c7a-ae75-1ab40cd8edd5}
+      client-secret: ${CLIENT-SECRET:55eeefb1-54a7-4868-8a77-d731029012f9}
+
+#monitor
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: prometheus,health,metrics
+  endpoint:
+    health:
+      enabled: true
+      show-details: ALWAYS
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: @project.name@
+
+#management.health.diskspace.enabled: false
+#management.health.circuitbreakers.enabled: true
+#management.health.ratelimiters.enabled: false
+#info:
+#  name: ${spring.application.name}
+#  description: resilience4j demo
+#  environment: ${spring.profiles.active}
+#  version: 0.0.1
+#
+management.metrics.tags.application: @project.name@
+management.metrics.distribution.percentiles-histogram.http.server.requests: true
+#management.metrics.distribution.percentiles-histogram.resilience4j.circuitbreaker.calls: true
+
+#logging
+logging:
+  level:
+    root: info
+
+#Resiliency
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      permittedNumberOfCallsInHalfOpenState: 3
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      waitDurationInOpenState: 5s
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10
+      recordExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.util.concurrent.TimeoutException
+        - java.io.IOException
+    #      ignoreExceptions:
+    #        - io.github.robwin.exception.BusinessException
+    shared:
+      slidingWindowSize: 100
+      permittedNumberOfCallsInHalfOpenState: 30
+      waitDurationInOpenState: 1s
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10
+  #      ignoreExceptions:
+  #        - io.github.robwin.exception.BusinessException
+  instances:
+    backendA:
+      baseConfig: default
+    backendB:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 10
+      permittedNumberOfCallsInHalfOpenState: 3
+      waitDurationInOpenState: 5s
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10
+#      recordFailurePredicate: io.github.robwin.exception.RecordFailurePredicate
+
+resilience4j.retry:
+  configs:
+    default:
+      maxAttempts: 20
+      waitDuration: 100
+      retryExceptions:
+        - org.springframework.web.client.HttpServerErrorException
+        - java.util.concurrent.TimeoutException
+        - java.io.IOException
+#      ignoreExceptions:
+#        - io.github.robwin.exception.BusinessException
+
+resilience4j.bulkhead:
+  configs:
+    default:
+      maxConcurrentCalls: 100
+  instances:
+    backendA:
+      maxConcurrentCalls: 10
+    backendB:
+      maxWaitDuration: 10ms
+      maxConcurrentCalls: 20
+
+resilience4j.thread-pool-bulkhead:
+  configs:
+    default:
+      maxThreadPoolSize: 4
+      coreThreadPoolSize: 2
+      queueCapacity: 2
+  instances:
+    backendA:
+      baseConfig: default
+    backendB:
+      maxThreadPoolSize: 1
+      coreThreadPoolSize: 1
+      queueCapacity: 1
