@@ -2,6 +2,7 @@ package br.com.areadigital.db.model.product;
 
 import br.com.areadigital.db.converter.VisibilityCategoriaConverter;
 import br.com.areadigital.db.model.IBaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,11 +13,12 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@Builder
 @Entity(name = "tb_category")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Category implements Serializable, IBaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 

@@ -2,6 +2,7 @@ package br.com.areadigital.db.model.product;
 
 import br.com.areadigital.db.converter.VisibilityCategoriaConverter;
 import br.com.areadigital.db.model.IBaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +22,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Product  implements Serializable , IBaseEntity<Long> {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Product implements Serializable, IBaseEntity<Long> {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -48,6 +50,7 @@ public class Product  implements Serializable , IBaseEntity<Long> {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     List<Category> categories = new ArrayList<>();
+
     @ElementCollection
     @CollectionTable(name = "tb_product_tagscategoria")
     private List<String> tagsCategoria = new ArrayList<>();

@@ -4,12 +4,12 @@ import br.com.areadigital.db.dto.IBaseDTO;
 import br.com.areadigital.db.mapper.EntityMapper;
 import br.com.areadigital.db.model.IBaseEntity;
 import br.com.areadigital.util.Util;
+import br.com.areadigital.web.service.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 
 import java.io.Serializable;
 import java.util.List;
@@ -71,7 +71,7 @@ public abstract class ABaseService<D extends IBaseDTO<K>, E extends IBaseEntity<
      */
     @Override
     public D findById(K id) {
-        return getEntityMapper().toDto(getRepository().findById(id).orElseThrow(org.springframework.data.rest.webmvc.ResourceNotFoundException::new));
+        return getEntityMapper().toDto(getRepository().findById(id).orElseThrow(() -> new ResourceNotFoundException("not found")));
     }
 
     /**
@@ -95,13 +95,14 @@ public abstract class ABaseService<D extends IBaseDTO<K>, E extends IBaseEntity<
         posUpdate(objectDTO);
         return save(getEntityMapper().toDto(entity));
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public List<D> findAll() {
-         List<D> list=getEntityMapper().toDto(getRepository().findAll());
-         return list;
+        List<D> list = getEntityMapper().toDto(getRepository().findAll());
+        return list;
     }
 
     /**

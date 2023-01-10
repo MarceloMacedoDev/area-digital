@@ -62,18 +62,18 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
-    @ExceptionHandler(org.springframework.data.rest.webmvc.ResourceNotFoundException.class)
-    public ResponseEntity<StandardError> entityResourceNotFoundException(ResourceNotFoundException e, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        StandardError err = new StandardError();
-        err.setTimestamp(Instant.now());
-        err.setStatus(status.value());
-        err.setError("Resource Not Found");
-        err.setMessage(e.getMessage());
-        err.setPath(request.getRequestURI());
-        setLogErro(status, request);
-        return ResponseEntity.status(status).body(err);
-    }
+//    @ExceptionHandler( ResourceNotFoundException.class)
+//    public ResponseEntity<StandardError> entityResourceNotFoundException(ResourceNotFoundException e, HttpServletRequest request) {
+//        HttpStatus status = HttpStatus.NOT_FOUND;
+//        StandardError err = new StandardError();
+//        err.setTimestamp(Instant.now());
+//        err.setStatus(status.value());
+//        err.setError("Resource Not Found");
+//        err.setMessage(e.getMessage());
+//        err.setPath(request.getRequestURI());
+//        setLogErro(status, request);
+//        return ResponseEntity.status(status).body(err);
+//    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<StandardError> entityNotFound(ResourceNotFoundException e, HttpServletRequest request) {

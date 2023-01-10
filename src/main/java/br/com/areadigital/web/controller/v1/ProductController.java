@@ -8,8 +8,10 @@ import br.com.areadigital.web.service.v1.ProductService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Data
@@ -19,4 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController extends ABaseController<ProductDto, Long> {
     private final ProductService service;
 
+    @Override
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<ProductDto> save(@RequestBody @Validated ProductDto objectDTO) {
+        objectDTO = getService().save(objectDTO);
+        return ResponseEntity.ok().body(objectDTO);
+    }
 }
